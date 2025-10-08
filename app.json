@@ -4,10 +4,20 @@
     "slug": "shopping-list",
     "version": "1.0.0",
     "orientation": "portrait",
+    // icon for app
     "icon": "./assets/images/icon.png",
     "scheme": "shoppinglist",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    // what you see when app is loading
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff",
+      "dark": {
+        "backgroundColor": "#000000"
+      }
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -22,6 +32,7 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
+      "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
