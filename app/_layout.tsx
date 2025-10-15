@@ -21,10 +21,20 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
         <Stack.Screen
           name='index'
-          options={{ title: "Home", headerShown: false }}
+          options={{ title: "Recipes", headerShown: false }}
+        />
+        <Stack.Screen
+          name='add-recipe'
+          options={{
+            title: "Add Recipe",
+            presentation: "modal", // Makes it slide up like a modal
+          }}
+        />
+        <Stack.Screen
+          name='shopping-list'
+          options={{ title: "Shopping List" }}
         />
         <Stack.Screen name='contact' options={{ title: "Contact Us" }} />
         <Stack.Screen
