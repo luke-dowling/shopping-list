@@ -1,10 +1,11 @@
 // app/index.tsx
-import { Link, useRouter } from "expo-router"
-import { useState } from "react"
-import { FlatList, Pressable, Text, View } from "react-native"
-import { Recipe } from "@/types/recipe"
-import { RecipeItem } from "@/components/RecipeItem"
+import BottomNavigation from "@/components/BottomNavigation"
 import { FloatingActionButton } from "@/components/FloatingActionButton"
+import { RecipeItem } from "@/components/RecipeItem"
+import { Recipe } from "@/types/recipe"
+import { useRouter } from "expo-router"
+import { useState } from "react"
+import { FlatList, Text, View } from "react-native"
 
 const MOCK_RECIPES: Recipe[] = [
   {
@@ -52,7 +53,7 @@ export default function RecipesScreen() {
   const activeRecipeCount = recipes.filter((r) => r.isActive).length
 
   return (
-    <View className='flex-1 bg-gray-50'>
+    <View className='flex-1 bg-gray-50 dark:bg-gray-800'>
       {/* Header */}
       <View className='bg-teal-500 pt-12 pb-6 px-4'>
         <Text className='text-3xl font-bold text-white mb-2'>My Recipes</Text>
@@ -81,19 +82,7 @@ export default function RecipesScreen() {
 
       <FloatingActionButton onPress={handleAddRecipe} />
 
-      {/* Bottom Navigation */}
-      <View className='bg-white border-t border-gray-200 flex-row'>
-        <Link href='/' asChild>
-          <Pressable className='flex-1 items-center py-3'>
-            <Text className='text-teal-500 font-semibold'>Recipes</Text>
-          </Pressable>
-        </Link>
-        <Link href='/shopping-list' asChild>
-          <Pressable className='flex-1 items-center py-3'>
-            <Text className='text-gray-500'>Shopping List</Text>
-          </Pressable>
-        </Link>
-      </View>
+      <BottomNavigation />
     </View>
   )
 }
