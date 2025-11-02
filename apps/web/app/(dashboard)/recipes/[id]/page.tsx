@@ -1,13 +1,60 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
-import { Trash2 } from "lucide-react"
-import mockRecipes from "@/data/mock-recipes.json"
+import { Trash2, Edit } from "lucide-react"
+import { useEffect, useState } from "react"
+import type { Recipe } from "@repo/shared"
 
 export default function RecipeDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const recipe = mockRecipes.find((r) => r.id === params.id)
+  const [recipe, setRecipe] = useState<Recipe | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchRecipe() {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/recipes/${params.id}`
+        )
+        if (!res.ok) throw new Error("Recipe not found")
+        const data = await res.json()
+        setRecipe(data.recipe)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchRecipe()
+  }, [params.id])
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this recipe?")) return
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/recipes/${params.id}`,
+        {
+          method: "DELETE",
+        }
+      )
+      if (res.ok) {
+        router.push("/recipes")
+      }
+    } catch (error) {
+      console.error("Failed to delete recipe:", error)
+      alert("Failed to delete recipe")
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <p className='text-gray-600'>Loading...</p>
+      </div>
+    )
+  }
 
   if (!recipe) {
     return (
@@ -60,11 +107,14 @@ export default function RecipeDetailPage() {
                   className='flex items-center gap-3 p-3 bg-gray-50 rounded-lg'
                 >
                   <div className='flex-1'>
-                    <span className='font-medium text-gray-900'>
+                    <span className='font-medium text-gray-900 capitalize'>
                       {ing.name}
                     </span>
                   </div>
-                  <span className='text-gray-600'>{ing.quantity}</span>
+                  <span className='text-gray-600'>
+                    {ing.amount}
+                    {ing.unit}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -85,10 +135,17 @@ export default function RecipeDetailPage() {
             <button className='flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'>
               Add to Shopping List
             </button>
-            <button className='px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors'>
+            <button
+              onClick={() => router.push(`/recipes/${recipe.id}/edit`)}
+              className='px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2'
+            >
+              <Edit size={20} />
               Edit
             </button>
-            <button className='px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors'>
+            <button
+              onClick={handleDelete}
+              className='px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors'
+            >
               <Trash2 size={20} />
             </button>
           </div>

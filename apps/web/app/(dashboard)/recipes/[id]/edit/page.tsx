@@ -1,23 +1,55 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useParams, useRouter } from "next/navigation"
 import { Plus, Trash2 } from "lucide-react"
+import type { Recipe } from "@repo/shared"
 
 interface IngredientInput {
+  id?: string
   name: string
   amount: string
   unit: string
 }
 
-export default function NewRecipePage() {
+export default function EditRecipePage() {
+  const params = useParams()
   const router = useRouter()
   const [recipeName, setRecipeName] = useState("")
   const [instructions, setInstructions] = useState("")
-  const [ingredients, setIngredients] = useState<IngredientInput[]>([
-    { name: "", amount: "", unit: "" },
-  ])
+  const [ingredients, setIngredients] = useState<IngredientInput[]>([])
   const [isSaving, setIsSaving] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchRecipe() {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/recipes/${params.id}`
+        )
+        if (!res.ok) throw new Error("Recipe not found")
+        const { recipe }: { recipe: Recipe } = await res.json()
+
+        setRecipeName(recipe.name)
+        setInstructions(recipe.instructions || "")
+        setIngredients(
+          recipe.ingredients.map((ing) => ({
+            id: ing.id,
+            name: ing.name,
+            amount: ing.amount.toString(),
+            unit: ing.unit || "",
+          }))
+        )
+      } catch (error) {
+        console.error(error)
+        alert("Failed to load recipe")
+        router.push("/recipes")
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchRecipe()
+  }, [params.id, router])
 
   const addIngredient = () => {
     setIngredients([...ingredients, { name: "", amount: "", unit: "" }])
@@ -52,34 +84,46 @@ export default function NewRecipePage() {
 
     setIsSaving(true)
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          recipe: {
-            name: recipeName,
-            instructions: instructions || null,
-            ingredients: ingredients.map((ing) => ({
-              name: ing.name,
-              amount: ing.amount,
-              unit: ing.unit || null,
-            })),
-          },
-        }),
-      })
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/recipes/${params.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            recipe: {
+              name: recipeName,
+              instructions: instructions || null,
+              ingredients: ingredients.map((ing) => ({
+                id: ing.id,
+                name: ing.name,
+                amount: parseFloat(ing.amount),
+                unit: ing.unit || null,
+              })),
+            },
+          }),
+        }
+      )
 
       if (res.ok) {
-        router.push("/recipes")
+        router.push(`/recipes/${params.id}`)
         router.refresh()
       } else {
-        alert("Failed to create recipe")
+        alert("Failed to update recipe")
       }
     } catch (error) {
-      console.error("Failed to create recipe:", error)
-      alert("Failed to create recipe")
+      console.error("Failed to update recipe:", error)
+      alert("Failed to update recipe")
     } finally {
       setIsSaving(false)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <p className='text-gray-600'>Loading...</p>
+      </div>
+    )
   }
 
   return (
@@ -89,7 +133,7 @@ export default function NewRecipePage() {
           <div className='flex justify-between items-center h-16'>
             <h1 className='text-xl font-bold text-gray-900'>Kitchen Manager</h1>
             <button
-              onClick={() => router.push("/recipes")}
+              onClick={() => router.push(`/recipes/${params.id}`)}
               className='text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors'
             >
               ← Back
@@ -100,7 +144,7 @@ export default function NewRecipePage() {
 
       <main className='max-w-4xl mx-auto px-4 py-6'>
         <div className='bg-white rounded-lg border border-gray-200 p-6'>
-          <h2 className='text-2xl font-bold text-gray-900 mb-6'>New Recipe</h2>
+          <h2 className='text-2xl font-bold text-gray-900 mb-6'>Edit Recipe</h2>
 
           <div className='space-y-6'>
             <div>
@@ -193,10 +237,10 @@ export default function NewRecipePage() {
                 disabled={isSaving}
                 className='flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed'
               >
-                {isSaving ? "Creating..." : "Create Recipe"}
+                {isSaving ? "Saving..." : "Save Changes"}
               </button>
               <button
-                onClick={() => router.push("/recipes")}
+                onClick={() => router.push(`/recipes/${params.id}`)}
                 disabled={isSaving}
                 className='px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50'
               >
