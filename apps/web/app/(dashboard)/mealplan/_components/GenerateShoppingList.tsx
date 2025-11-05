@@ -25,7 +25,7 @@ export function GenerateShoppingListButton({
         body: JSON.stringify({ userId: "user_1" }),
       })
 
-      router.push("/shopping-list")
+      router.push("/shopping")
     } catch (error) {
       console.error("Failed to generate shopping list:", error)
       setIsGenerating(false)

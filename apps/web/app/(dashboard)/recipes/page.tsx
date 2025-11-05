@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { ChefHat, Plus } from "lucide-react"
+
 import type { Recipe } from "@repo/shared"
 
 async function getAllRecipes() {

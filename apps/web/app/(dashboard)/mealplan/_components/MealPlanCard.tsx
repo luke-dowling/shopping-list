@@ -108,20 +108,22 @@ export function MealPlanCard({ item }: MealPlanCardProps) {
         <div className='flex flex-col items-end gap-3'>
           {/* Portion Control */}
           <div className='flex flex-col items-center gap-2'>
-            <span className='text-xs text-gray-600 font-medium'>Portions</span>
+            <span className='text-xs text-gray-950 font-medium'>Portions</span>
             <div className='flex items-center gap-2 bg-gray-100 rounded-lg p-1'>
               <button
                 onClick={() => updatePortions(portions - 1)}
                 disabled={portions <= 1 || isUpdating}
-                className='w-8 h-8 flex items-center justify-center rounded hover:bg-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
+                className='w-8 h-8 flex items-center justify-center rounded hover:bg-white transition-colors text-gray-950 disabled:opacity-40 disabled:cursor-not-allowed'
               >
                 <Minus size={16} />
               </button>
-              <span className='w-8 text-center font-semibold'>{portions}</span>
+              <span className='w-8 text-center font-semibold text-gray-950'>
+                {portions}
+              </span>
               <button
                 onClick={() => updatePortions(portions + 1)}
                 disabled={isUpdating}
-                className='w-8 h-8 flex items-center justify-center rounded hover:bg-white transition-colors disabled:opacity-40'
+                className='w-8 h-8 flex items-center justify-center rounded hover:bg-white transition-colors disabled:opacity-40 text-gray-950'
               >
                 <Plus size={16} />
               </button>

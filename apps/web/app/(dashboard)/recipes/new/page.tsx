@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, Trash2 } from "lucide-react"
+import BackButton from "../_components/BackButton"
 
 interface IngredientInput {
   name: string
@@ -84,24 +85,13 @@ export default function NewRecipePage() {
 
   return (
     <div className='min-h-screen bg-gray-50'>
-      <nav className='bg-white border-b border-gray-200 sticky top-0 z-10'>
-        <div className='max-w-4xl mx-auto px-4'>
-          <div className='flex justify-between items-center h-16'>
-            <h1 className='text-xl font-bold text-gray-900'>Kitchen Manager</h1>
-            <button
-              onClick={() => router.push("/recipes")}
-              className='text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors'
-            >
-              ← Back
-            </button>
-          </div>
-        </div>
-      </nav>
+      <BackButton />
 
       <main className='max-w-4xl mx-auto px-4 py-6'>
         <div className='bg-white rounded-lg border border-gray-200 p-6'>
           <h2 className='text-2xl font-bold text-gray-900 mb-6'>New Recipe</h2>
 
+          {/* todo: turn this into a form - put it in a component folder */}
           <div className='space-y-6'>
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-2'>
@@ -111,7 +101,7 @@ export default function NewRecipePage() {
                 type='text'
                 value={recipeName}
                 onChange={(e) => setRecipeName(e.target.value)}
-                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                className='text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 placeholder='e.g., Spaghetti Carbonara'
               />
             </div>
@@ -139,7 +129,7 @@ export default function NewRecipePage() {
                       onChange={(e) =>
                         updateIngredient(index, "name", e.target.value)
                       }
-                      className='flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                      className='text-black flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                       placeholder='Ingredient name'
                     />
                     <input
@@ -148,7 +138,7 @@ export default function NewRecipePage() {
                       onChange={(e) =>
                         updateIngredient(index, "amount", e.target.value)
                       }
-                      className='w-24 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                      className='text-black w-24 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                       placeholder='Amount'
                     />
                     <input
@@ -157,7 +147,7 @@ export default function NewRecipePage() {
                       onChange={(e) =>
                         updateIngredient(index, "unit", e.target.value)
                       }
-                      className='w-20 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                      className='text-black w-20 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                       placeholder='Unit'
                     />
                     {ingredients.length > 1 && (
@@ -182,7 +172,7 @@ export default function NewRecipePage() {
                 value={instructions}
                 onChange={(e) => setInstructions(e.target.value)}
                 rows={6}
-                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                className='text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 placeholder='Step by step cooking instructions...'
               />
             </div>
@@ -198,7 +188,8 @@ export default function NewRecipePage() {
               <button
                 onClick={() => router.push("/recipes")}
                 disabled={isSaving}
-                className='px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50'
+                type='button'
+                className='text-black px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50'
               >
                 Cancel
               </button>

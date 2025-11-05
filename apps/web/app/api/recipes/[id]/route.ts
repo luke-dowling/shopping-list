@@ -7,9 +7,10 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const recipe = mockRecipes.find(async (r) => {
-    await params
-    return r.id === params.id
+  const { id } = await params
+
+  const recipe = mockRecipes.find((r) => {
+    return r.id === id
   })
 
   if (!recipe) {
@@ -24,7 +25,9 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   const { recipe: updatedRecipe } = await request.json()
-  const index = mockRecipes.findIndex((r) => r.id === params.id)
+  const { id } = await params
+
+  const index = mockRecipes.findIndex((r) => r.id === id)
 
   if (index === -1) {
     return Response.json({ error: "Recipe not found" }, { status: 404 })
@@ -32,7 +35,7 @@ export async function PUT(
 
   mockRecipes[index] = {
     ...updatedRecipe,
-    id: params.id,
+    id,
   }
 
   fs.writeFileSync(recipesPath, JSON.stringify(mockRecipes, null, 2))
@@ -47,7 +50,8 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const index = mockRecipes.findIndex((r) => r.id === params.id)
+  const { id } = await params
+  const index = mockRecipes.findIndex((r) => r.id === id)
 
   if (index === -1) {
     return Response.json({ error: "Recipe not found" }, { status: 404 })
